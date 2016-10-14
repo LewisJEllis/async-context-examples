@@ -7,7 +7,7 @@ See [Async context propagation in various language ecosystems](https://docs.goog
 
 The two most currently viable mechanisms for asynchronous contexts in Node are [continuation-local-storage](https://github.com/othiym23/node-continuation-local-storage) and [domains](https://nodejs.org/api/domain.html), among others described in the above-linked document. We exercise both in these examples.
 
-If a callback is queued from a particular asynchronous context (either an active domain or a CLS namespace context), we want that callback to run with that same context when it is eventually called. Domains and CLS do automatic implicit binding to make this work automatically where possible, but certain scenarios will require explicit binding to maintain the correct context.
+If a callback is queued from a particular asynchronous context (either an active domain or a CLS namespace context), we want that callback to have that same context when it is eventually called. Domains and CLS use implicit binding to make this work automatically where possible, but certain scenarios will require explicit binding to maintain the correct context (see [implicit vs explicit binding](https://nodejs.org/api/domain.html#domain_implicit_binding)).
 
 ## What we have here
 This repository currently has three examples of scenarios where explicit binding is necessary:
@@ -15,7 +15,7 @@ This repository currently has three examples of scenarios where explicit binding
 - resource pooling with [node-pool](https://github.com/coopernurse/node-pool) (which is really just a special case of callback queueing)
 - native promises
 
-These examples are fairly simple and the source source should be small and readable enough to understand what's going on. In general, we want the context and closure values to remain aligned. In each file, the first series of prints are without explicit binding where the context is mismatched or lost, and the second series is with explicit binding where the context it is preserved.
+These examples are fairly simple and the source should be small and readable enough to understand what's going on. In general, we want the context and closure values to remain aligned. In each file, the first series of prints are without explicit binding where the context is mismatched or lost, and the second series is with explicit binding where the context is correctly propagated.
 
 ## What this means
 It is important for packages in the Node ecosystem to be "good citizens" by preserving asynchronous contexts when necessary/possible; this generally means using [`domain.bind`](https://nodejs.org/api/domain.html#domain_domain_bind_callback) or [`namespace.bind`](https://github.com/othiym23/node-continuation-local-storage#namespacebindcallback-context) when:

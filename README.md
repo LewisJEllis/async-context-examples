@@ -7,7 +7,7 @@ See [Async context propagation in various language ecosystems](https://docs.goog
 
 The two most currently viable mechanisms for asynchronous contexts in Node are [continuation-local-storage](https://github.com/othiym23/node-continuation-local-storage) and [domains](https://nodejs.org/api/domain.html), among others described in the above-linked document. We exercise both in these examples.
 
-If a callback is queued from a particular asynchronous context (either an active domain or a CLS session context), we want that callback to run with that same context when it is eventually called. Domains and CLS do automatic implicit binding to make this work automatically where possible, but certain scenarios will require explicit binding to maintain the correct context.
+If a callback is queued from a particular asynchronous context (either an active domain or a CLS namespace context), we want that callback to run with that same context when it is eventually called. Domains and CLS do automatic implicit binding to make this work automatically where possible, but certain scenarios will require explicit binding to maintain the correct context.
 
 ## What we have here
 This repository currently has three examples of scenarios where explicit binding is necessary:
